@@ -32,7 +32,6 @@
     <div class="container mx-auto max-w-6xl px-4 py-8">
         <!-- Header Section -->
         <header class="text-center mb-12">
-            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/14645de7-025d-4c5a-8127-f213ada8f297.png" alt="Digital study assistant with futuristic interface showing books and learning materials floating in space" class="mx-auto rounded-xl mb-6 w-full max-w-4xl" />
             <h1 class="text-4xl md:text-5xl font-bold text-indigo-700 mb-4">Study Assistant</h1>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">Your personal AI-powered study companion for academic success</p>
         </header>
@@ -153,6 +152,10 @@
         ];
 
         // AI API endpoint - replace with your actual AI service endpoint
+
+
+
+
         const AI_API_ENDPOINT = 'https://api.your-ai-service.com/v1/chat/completions';
 
         async function getAIResponse(prompt) {
@@ -161,7 +164,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer YOUR_API_KEY' // Replace with your API key
+                        'Authorization': 'Bearer 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' // Replace with your API key
                     },
                     body: JSON.stringify({
                         prompt: `${prompt} - Answer as a helpful tutor`,
@@ -270,3 +273,4 @@
     </script>
 </body>
 </html>
+
