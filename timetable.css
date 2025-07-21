@@ -1,0 +1,250 @@
+    :root {
+        --primary: #4f46e5;
+        --secondary: #10b981;
+        --accent: #f59e0b;
+        --dark: #1e293b;
+        --light: #f8fafc;
+
+        /* Define color variables for classes */
+        --blue-bg: #e0f2fe; /* blue-50 */
+        --blue-border: #93c5fd; /* blue-300 */
+        --blue-text: #1d4ed8; /* blue-700 */
+
+        --purple-bg: #ede9fe; /* purple-50 */
+        --purple-border: #c4b5fd; /* purple-300 */
+        --purple-text: #6d28d9; /* purple-700 */
+
+        --green-bg: #dcfce7; /* green-50 */
+        --green-border: #86efad; /* green-300 */
+        --green-text: #16a34a; /* green-700 */
+
+        --red-bg: #fee2e2; /* red-50 */
+        --red-border: #fca5a5; /* red-300 */
+        --red-text: #dc2626; /* red-700 */
+
+        --yellow-bg: #fffbeb; /* yellow-50 */
+        --yellow-border: #fcd34d; /* yellow-300 */
+        --yellow-text: #d97706; /* yellow-700 */
+    }
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f1f5f9;
+    }
+    
+    .sidebar {
+        transition: all 0.3s ease;
+    }
+    
+    @media (max-width: 768px) {
+        .sidebar {
+            transform: translateX(-100%);
+        }
+        .sidebar.active {
+            transform: translateX(0);
+        }
+    }
+    
+    .time-block {
+        transition: all 0.2s ease;
+        position: relative; /* For absolute positioning of actions */
+        z-index: 10; /* Ensure blocks are above grid lines */
+        min-height: 40px; /* Ensure visibility even for short classes */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .time-block:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+    }
+    
+    .animate-pulse {
+        animation: pulse 2s infinite;
+    }
+    
+    .class-modal {
+        display: none;
+        position: fixed;
+        z-index: 100;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .class-modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+    }
+
+    .close-button {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close-button:hover,
+    .close-button:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Timetable specific styles */
+    .timetable-grid {
+        display: grid;
+        grid-template-columns: 60px repeat(7, 1fr); /* Time column + 7 days */
+        border: 1px solid #e2e8f0; /* gray-200 */
+        border-radius: 0.75rem;
+        overflow: hidden;
+        background-color: white;
+    }
+
+    .timetable-header {
+        background-color: #f8fafc; /* gray-50 */
+        font-weight: 600;
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #e2e8f0;
+        border-right: 1px solid #e2e8f0;
+        font-size: 0.875rem; /* text-sm */
+        color: #475569; /* gray-600 */
+    }
+
+    .timetable-header:first-child {
+        border-top-left-radius: 0.75rem;
+    }
+    .timetable-header:last-child {
+        border-top-right-radius: 0.75rem;
+        border-right: none;
+    }
+
+    /* Highlight for today's date */
+    .timetable-header.today {
+        background-color: #e0f2fe; /* blue-50 */
+        color: #1d4ed8; /* blue-700 */
+        border: 1px solid #93c5fd; /* blue-300 */
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    }
+
+    .time-label {
+        padding: 8px;
+        font-size: 0.75rem; /* text-xs */
+        color: #64748b; /* gray-500 */
+        text-align: right;
+        border-right: 1px solid #e2e8f0;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        height: 60px; /* Height for each hour slot */
+    }
+
+    .time-cell {
+        position: relative;
+        border-bottom: 1px solid #e2e8f0;
+        border-right: 1px solid #e2e8f0;
+        height: 60px; /* Height for each hour slot */
+        padding: 4px; /* Padding inside cell for blocks */
+    }
+
+    .time-cell:last-child {
+        border-right: none;
+    }
+
+    .timetable-row:last-child .time-label,
+    .timetable-row:last-child .time-cell {
+        border-bottom: none;
+    }
+
+    /* Specific styling for class blocks within the grid */
+    .time-block-container {
+        position: absolute;
+        width: calc(100% - 8px); /* Account for cell padding */
+        left: 4px;
+        top: 0; /* Will be adjusted by JS for minute offset */
+        height: 100%; /* Will be adjusted by JS for duration */
+        z-index: 20; /* Above grid lines */
+        pointer-events: none; /* Allow clicks to pass through to underlying cells if needed */
+    }
+
+    .time-block-actual {
+        pointer-events: auto; /* Make the actual block clickable */
+        padding: 6px 8px;
+        border-radius: 0.5rem;
+        font-size: 0.875rem; /* text-sm */
+        line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        height: 100%; /* Fill the calculated height */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .time-block-actual .class-name {
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+    .time-block-actual .class-time {
+        font-size: 0.75rem; /* text-xs */
+        opacity: 0.9;
+    }
+
+    .time-block-actions {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        display: flex;
+        gap: 4px;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        z-index: 30; /* Above the block itself */
+    }
+
+    .time-block-actual:hover .time-block-actions {
+        opacity: 1;
+    }
+
+    .time-block-actions button {
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 0.25rem;
+        padding: 4px;
+        line-height: 1;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+    .time-block-actions button:hover {
+        background-color: white;
+    }
+
+    /* Color classes for dynamic styling */
+    .bg-blue-class { background-color: var(--blue-bg); border: 1px solid var(--blue-border); color: var(--blue-text); }
+    .bg-purple-class { background-color: var(--purple-bg); border: 1px solid var(--purple-border); color: var(--purple-text); }
+    .bg-green-class { background-color: var(--green-bg); border: 1px solid var(--green-border); color: var(--green-text); }
+    .bg-red-class { background-color: var(--red-bg); border: 1px solid var(--red-border); color: var(--red-text); }
+    .bg-yellow-class { background-color: var(--yellow-bg); border: 1px solid var(--yellow-border); color: var(--yellow-text); }
+
+    .text-blue-class { color: var(--blue-text); }
+    .text-purple-class { color: var(--purple-text); }
+    .text-green-class { color: var(--green-text); }
+    .text-red-class { color: var(--red-text); }
+    .text-yellow-class { color: var(--yellow-text); }

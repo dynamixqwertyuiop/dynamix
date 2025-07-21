@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyBuddy - Notes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB; /* Light background for better contrast */
+        }
+        
+        .note-item {
+            transition: transform 0.2s, box-shadow 0.2s;
+            background-color: #FFFAE5; /* Softer sticky note color */
+            border: 1px solid #F6EB61; /* Lighter border */
+            border-radius: 0.5rem; /* Rounded corners */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .note-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Modal overlay styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 50; /* Ensure it is above other content */
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 3rem; /* Increased padding for more space */
+            width: 90%; /* Set width to 90% of the viewport */
+            max-width: 600px; /* Maximum width for larger screens */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 100; /* Ensure it is above the overlay */
+            position: relative; /* For positioning the close button */
+        }
+
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #4A5568; /* Gray color */
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem; /* Rounded corners */
+            transition: background-color 0.2s, transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background-color: #4F46E5; /* Indigo color */
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #4338CA; /* Darker shade on hover */
+        }
+
+        .btn-success {
+            background-color: #22C55E; /* Green color */
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #16A34A; /* Darker shade on hover */
+        }
+
+        .btn-danger {
+            background-color: #EF4444; /* Red color */
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #DC2626; /* Darker shade on hover */
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-4xl font-bold text-gray-800">Your Notes</h1>
+            <button id="addNoteBtn" class="btn btn-primary">Add New Note</button>
+        </div>
+        
+        <div id="notesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Notes will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <button class="close-button" id="closeModalBtn">&times;</button>
+            <h2 class="text-2xl font-semibold mb-4">Add/Edit Note</h2>
+            <form id="noteForm">
+                <div class="mb-4 flex space-x-4">
+                    <div class="flex-1">
+                        <label for="subjectName" class="block text-sm font-medium text-gray-700 mb-1">Subject Name</label>
+                        <input type="text" id="subjectName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    </div>
+                    <div class="flex-1">
+                        <label for="chapterNumber" class="block text-sm font-medium text-gray-700 mb-1">Chapter Number</label>
+                        <input type="text" id="chapterNumber" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="topicName" class="block text-sm font-medium text-gray-700 mb-1">Topic Name</label>
+                    <input type="text" id="topicName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="noteContent" class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                    <textarea id="noteContent" rows="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required></textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" class="btn btn-primary">Save Note</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const noteForm = document.getElementById('noteForm');
+        const notesList = document.getElementById('notesList');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const addNoteBtn = document.getElementById('addNoteBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        let notes = JSON.parse(localStorage.getItem('notes')) || []; // Load notes from localStorage
+        let editingIndex = null; // To track which note is being edited
+
+        // Function to render notes
+        function renderNotes() {
+            notesList.innerHTML = '';
+            notes.forEach((note, index) => {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'note-item rounded-lg p-4 note-item';
+                noteElement.innerHTML = `
+                    <h3 class="font-medium text-lg text-gray-800">${note.subjectName} - Chapter ${note.chapterNumber}: ${note.topicName}</h3>
+                    <p class="text-gray-600 mt-1">${note.content}</p>
+                    <div class="flex justify-end mt-2 space-x-2">
+                        <button class="btn btn-success edit-note" data-index="${index}">Edit</button>
+                        <button class="btn btn-danger delete-note" data-index="${index}">Delete</button>
+                    </div>
+                `;
+                notesList.appendChild(noteElement);
+            });
+
+            // Add event listeners to edit and delete buttons
+            document.querySelectorAll('.edit-note').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    editNote(index);
+                });
+            });
+
+            document.querySelectorAll('.delete-note').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    deleteNote(index);
+                });
+            });
+        }
+
+        // Function to save notes to localStorage
+        function saveNotes() {
+            localStorage.setItem('notes', JSON.stringify(notes));
+        }
+
+        // Function to add a new note or update an existing note
+        noteForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const subjectName = document.getElementById('subjectName').value.trim();
+            const chapterNumber = document.getElementById('chapterNumber').value.trim();
+            const topicName = document.getElementById('topicName').value.trim();
+            const content = document.getElementById('noteContent').value.trim();
+            if (subjectName && chapterNumber && topicName && content) {
+                if (editingIndex !== null) {
+                    // Update existing note
+                    notes[editingIndex] = { subjectName, chapterNumber, topicName, content };
+                    editingIndex = null; // Reset editing index
+                } else {
+                    // Add new note
+                    notes.push({ subjectName, chapterNumber, topicName, content });
+                }
+                saveNotes(); // Save notes to localStorage
+                renderNotes();
+                noteForm.reset();
+                modalOverlay.style.display = 'none'; // Hide modal after saving
+            }
+        });
+
+        // Function to edit a note
+        function editNote(index) {
+            const note = notes[index];
+            document.getElementById('subjectName').value = note.subjectName;
+            document.getElementById('chapterNumber').value = note.chapterNumber;
+            document.getElementById('topicName').value = note.topicName;
+            document.getElementById('noteContent').value = note.content;
+            editingIndex = index; // Set the editing index
+            modalOverlay.style.display = 'flex'; // Show modal for editing
+        }
+
+        // Function to delete a note
+        function deleteNote(index) {
+            notes.splice(index, 1);
+            saveNotes(); // Save updated notes to localStorage
+            renderNotes();
+        }
+
+        // Show the note form when the "Add New Note" button is clicked
+        addNoteBtn.addEventListener('click', function() {
+            noteForm.reset();
+            editingIndex = null; // Reset editing index
+            modalOverlay.style.display = 'flex'; // Show modal
+        });
+
+        // Close the modal when clicking the close button
+        closeModalBtn.addEventListener('click', function() {
+            modalOverlay.style.display = 'none'; // Hide modal
+        });
+
+        // Close the modal when clicking outside of it
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                modalOverlay.style.display = 'none'; // Hide modal
+            }
+        });
+
+        // Initial render of notes
+        renderNotes();
+    </script>
+</body>
+</html>

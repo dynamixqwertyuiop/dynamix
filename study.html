@@ -1,0 +1,505 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyBuddy - Student Productivity App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style/todo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="min-h-screen">
+
+                <!-- Sidebar -->
+            <div class="sidebar w-64 bg-white h-screen fixed shadow-lg z-40 flex flex-col">
+                <div class="p-6 flex items-center space-x-3 border-b">
+                    <img src="https://placehold.co/40x40" alt="StudyHub logo featuring a graduation cap with a digital circuit pattern in indigo and teal colors" class="rounded-lg">
+                    <h1 class="text-xl font-bold text-indigo-600">StudyHub</h1>
+                </div>
+                
+                <nav class="flex-1 p-4 space-y-2">
+                    <a href="index.php" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                        <i class="fas fa-home w-5 text-center"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="timetable.php" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                        <i class="fas fa-calendar-alt w-5 text-center"></i>
+                        <span>Timetable</span>
+                    </a>
+                    <a href="to-do.php" class="flex items-center space-x-3 p-3 rounded-lg bg-indigo-50 text-indigo-700">
+                        <i class="fas fa-tasks w-5 text-center"></i>
+                        <span>To-Do List</span>
+                    </a>
+                    <a href="reminders.php" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                        <i class="fas fa-bell w-5 text-center"></i>
+                        <span>Reminders</span>
+                    </a>
+                    <a href="study.php" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                        <i class="fas fa-users w-5 text-center"></i>
+                        <span>Study Rooms</span>
+                    </a>
+                                <a href="note.php" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                        <i class="fa-regular fa-note-sticky"></i>
+                        <span>Notes</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+        <div class="flex-1 ml-0 md:ml-64 p-6">
+            <header class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">Weekly Timetable</h1>
+                <p class="text-gray-600">Organize your classes and study sessions.</p>
+            </header>
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-gray-800">Today's Tasks</h2>
+                        <div class="flex space-x-2">
+                            <button id="addTaskBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                                </svg>
+                                Add Task
+                            </button>
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Filter</button>
+                        </div>
+                    </div>
+                    
+                    <div id="taskList" class="space-y-3">
+                        <!-- Task items will be added here dynamically -->
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Study Timer</h2>
+                    <div class="flex flex-col items-center">
+                        <div id="timerDisplay" class="text-5xl font-bold text-gray-800 mb-6">25:00</div>
+                        <div class="flex space-x-4 mb-6">
+                            <button id="pomodoroBtn" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Pomodoro</button>
+                            <button id="shortBreakBtn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Short Break</button>
+                            <button id="longBreakBtn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Long Break</button>
+                        </div>
+                        <button id="startStopBtn" class="px-8 py-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition text-lg font-medium">Start</button>
+                    </div>
+                </div>
+            </div>
+    
+    <!-- Add Task Modal -->
+    <div id="taskModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-xl p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Add New Task</h3>
+                <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <form id="taskForm">
+                <div class="mb-4">
+                    <label for="taskTitle" class="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
+                    <input type="text" id="taskTitle" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label for="taskDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea id="taskDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                    <div class="flex space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="priority" value="high" class="form-radio text-red-500">
+                            <span class="ml-2">High</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="priority" value="medium" class="form-radio text-yellow-500" checked>
+                            <span class="ml-2">Medium</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="priority" value="low" class="form-radio text-green-500">
+                            <span class="ml-2">Low</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="taskDueDate" class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+                    <input type="date" id="taskDueDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelTaskBtn" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Add Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // DOM Elements
+        const taskList = document.getElementById('taskList');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const taskModal = document.getElementById('taskModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelTaskBtn = document.getElementById('cancelTaskBtn');
+        const taskForm = document.getElementById('taskForm');
+        
+        // Timer Elements
+        const timerDisplay = document.getElementById('timerDisplay');
+        const pomodoroBtn = document.getElementById('pomodoroBtn');
+        const shortBreakBtn = document.getElementById('shortBreakBtn');
+        const longBreakBtn = document.getElementById('longBreakBtn');
+        const startStopBtn = document.getElementById('startStopBtn');
+        
+        // Timer Variables
+        let timer;
+        let timeLeft = 25 * 60; // 25 minutes in seconds
+        let timerActive = false;
+        let currentMode = 'pomodoro';
+        
+        // Sample tasks data
+        let tasks = [
+            {
+                id: 1,
+                title: 'Complete Math homework',
+                description: 'Chapter 5 exercises 1-10',
+                priority: 'high',
+                dueDate: '2023-11-15',
+                completed: false
+            },
+            {
+                id: 2,
+                title: 'Read Literature chapter',
+                description: 'Pages 45-60',
+                priority: 'medium',
+                dueDate: '2023-11-16',
+                completed: false
+            },
+            {
+                id: 3,
+                title: 'Prepare for Chemistry quiz',
+                description: 'Review periodic table trends',
+                priority: 'low',
+                dueDate: '2023-11-18',
+                completed: true
+            }
+        ];
+        
+        // Initialize the app
+        function init() {
+            renderTasks();
+            setupEventListeners();
+        }
+        
+        // Render all tasks
+        function renderTasks() {
+            taskList.innerHTML = '';
+            
+            if (tasks.length === 0) {
+                taskList.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        <p>No tasks yet. Add your first task!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            tasks.forEach(task => {
+                const taskElement = document.createElement('div');
+                taskElement.className = `bg-white border border-gray-200 rounded-lg p-4 flex items-start task-item ${task.completed ? 'completed' : ''}`;
+                taskElement.dataset.id = task.id;
+                
+                if (!task.completed) {
+                    taskElement.classList.add(`priority-${task.priority}`);
+                }
+                
+                taskElement.innerHTML = `
+                    <div class="flex items-start mr-3">
+                        <input type="checkbox" class="checkbox-custom mt-1" ${task.completed ? 'checked' : ''}>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-medium ${task.completed ? 'text-gray-400' : 'text-gray-800'}">${task.title}</div>
+                        ${task.description ? `<div class="text-sm ${task.completed ? 'text-gray-300' : 'text-gray-500'} mt-1">${task.description}</div>` : ''}
+                        ${task.dueDate ? `<div class="text-xs ${task.completed ? 'text-gray-300' : 'text-gray-400'} mt-2">Due: ${formatDate(task.dueDate)}</div>` : ''}
+                    </div>
+                    <div class="task-actions flex space-x-2">
+                        <button class="text-gray-400 hover:text-gray-600 edit-task">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                            </svg>
+                        </button>
+                        <button class="text-gray-400 hover:text-gray-600 delete-task">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                
+                taskList.appendChild(taskElement);
+            });
+            
+            // Add event listeners to checkboxes
+            document.querySelectorAll('.checkbox-custom').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const taskId = parseInt(this.closest('.task-item').dataset.id);
+                    toggleTaskCompletion(taskId);
+                });
+            });
+            
+            // Add event listeners to edit buttons
+            document.querySelectorAll('.edit-task').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const taskId = parseInt(this.closest('.task-item').dataset.id);
+                    editTask(taskId);
+                });
+            });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-task').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const taskId = parseInt(this.closest('.task-item').dataset.id);
+                    deleteTask(taskId);
+                });
+            });
+        }
+        
+        // Format date for display
+        function formatDate(dateString) {
+            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+        
+        // Toggle task completion status
+        function toggleTaskCompletion(taskId) {
+            const taskIndex = tasks.findIndex(task => task.id === taskId);
+            if (taskIndex !== -1) {
+                tasks[taskIndex].completed = !tasks[taskIndex].completed;
+                renderTasks();
+            }
+        }
+        
+        // Delete a task
+        function deleteTask(taskId) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                tasks = tasks.filter(task => task.id !== taskId);
+                renderTasks();
+            }
+        }
+        
+        // Edit a task
+        function editTask(taskId) {
+            const task = tasks.find(task => task.id === taskId);
+            if (task) {
+                document.getElementById('taskTitle').value = task.title;
+                document.getElementById('taskDescription').value = task.description;
+                document.querySelector(`input[name="priority"][value="${task.priority}"]`).checked = true;
+                document.getElementById('taskDueDate').value = task.dueDate;
+                
+                // Change modal title and submit button
+                document.querySelector('#taskModal h3').textContent = 'Edit Task';
+                document.querySelector('#taskForm button[type="submit"]').textContent = 'Update Task';
+                
+                // Store the task ID in the form
+                taskForm.dataset.editingTaskId = taskId;
+                
+                // Show the modal
+                taskModal.classList.remove('hidden');
+            }
+        }
+        
+        // Add a new task
+        function addNewTask(title, description, priority, dueDate) {
+            const newTask = {
+                id: Date.now(),
+                title,
+                description,
+                priority,
+                dueDate,
+                completed: false
+            };
+            
+            tasks.unshift(newTask);
+            renderTasks();
+        }
+        
+        // Update an existing task
+        function updateTask(taskId, title, description, priority, dueDate) {
+            const taskIndex = tasks.findIndex(task => task.id === taskId);
+            if (taskIndex !== -1) {
+                tasks[taskIndex] = {
+                    ...tasks[taskIndex],
+                    title,
+                    description,
+                    priority,
+                    dueDate
+                };
+                renderTasks();
+            }
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Task modal
+            addTaskBtn.addEventListener('click', () => {
+                // Reset form
+                taskForm.reset();
+                document.querySelector('#taskModal h3').textContent = 'Add New Task';
+                document.querySelector('#taskForm button[type="submit"]').textContent = 'Add Task';
+                delete taskForm.dataset.editingTaskId;
+                
+                taskModal.classList.remove('hidden');
+            });
+            
+            closeModalBtn.addEventListener('click', () => {
+                taskModal.classList.add('hidden');
+            });
+            
+            cancelTaskBtn.addEventListener('click', () => {
+                taskModal.classList.add('hidden');
+            });
+            
+            taskForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const title = document.getElementById('taskTitle').value.trim();
+                const description = document.getElementById('taskDescription').value.trim();
+                const priority = document.querySelector('input[name="priority"]:checked').value;
+                const dueDate = document.getElementById('taskDueDate').value;
+                
+                if (!title) {
+                    alert('Please enter a task title');
+                    return;
+                }
+                
+                if (taskForm.dataset.editingTaskId) {
+                    // Update existing task
+                    updateTask(
+                        parseInt(taskForm.dataset.editingTaskId),
+                        title,
+                        description,
+                        priority,
+                        dueDate
+                    );
+                } else {
+                    // Add new task
+                    addNewTask(title, description, priority, dueDate);
+                }
+                
+                taskModal.classList.add('hidden');
+            });
+            
+            // Timer functionality
+            pomodoroBtn.addEventListener('click', () => {
+                currentMode = 'pomodoro';
+                timeLeft = 25 * 60;
+                updateTimerDisplay();
+                pomodoroBtn.classList.add('bg-indigo-600', 'text-white');
+                pomodoroBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                shortBreakBtn.classList.add('bg-gray-200', 'text-gray-700');
+                shortBreakBtn.classList.remove('bg-indigo-600', 'text-white');
+                longBreakBtn.classList.add('bg-gray-200', 'text-gray-700');
+                longBreakBtn.classList.remove('bg-indigo-600', 'text-white');
+                
+                if (timerActive) {
+                    clearInterval(timer);
+                    startTimer();
+                }
+            });
+            
+            shortBreakBtn.addEventListener('click', () => {
+                currentMode = 'shortBreak';
+                timeLeft = 5 * 60;
+                updateTimerDisplay();
+                shortBreakBtn.classList.add('bg-indigo-600', 'text-white');
+                shortBreakBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                pomodoroBtn.classList.add('bg-gray-200', 'text-gray-700');
+                pomodoroBtn.classList.remove('bg-indigo-600', 'text-white');
+                longBreakBtn.classList.add('bg-gray-200', 'text-gray-700');
+                longBreakBtn.classList.remove('bg-indigo-600', 'text-white');
+                
+                if (timerActive) {
+                    clearInterval(timer);
+                    startTimer();
+                }
+            });
+            
+            longBreakBtn.addEventListener('click', () => {
+                currentMode = 'longBreak';
+                timeLeft = 15 * 60;
+                updateTimerDisplay();
+                longBreakBtn.classList.add('bg-indigo-600', 'text-white');
+                longBreakBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                pomodoroBtn.classList.add('bg-gray-200', 'text-gray-700');
+                pomodoroBtn.classList.remove('bg-indigo-600', 'text-white');
+                shortBreakBtn.classList.add('bg-gray-200', 'text-gray-700');
+                shortBreakBtn.classList.remove('bg-indigo-600', 'text-white');
+                
+                if (timerActive) {
+                    clearInterval(timer);
+                    startTimer();
+                }
+            });
+            
+            startStopBtn.addEventListener('click', () => {
+                if (timerActive) {
+                    clearInterval(timer);
+                    timerActive = false;
+                    startStopBtn.textContent = 'Start';
+                    startStopBtn.classList.remove('bg-red-600');
+                    startStopBtn.classList.add('bg-indigo-600');
+                    document.getElementById('timerDisplay').classList.remove('pomodoro-active');
+                } else {
+                    startTimer();
+                    timerActive = true;
+                    startStopBtn.textContent = 'Stop';
+                    startStopBtn.classList.remove('bg-indigo-600');
+                    startStopBtn.classList.add('bg-red-600');
+                    if (currentMode === 'pomodoro') {
+                        document.getElementById('timerDisplay').classList.add('pomodoro-active');
+                    }
+                }
+            });
+        }
+        
+        // Timer functions
+        function startTimer() {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timerActive = false;
+                    startStopBtn.textContent = 'Start';
+                    startStopBtn.classList.remove('bg-red-600');
+                    startStopBtn.classList.add('bg-indigo-600');
+                    document.getElementById('timerDisplay').classList.remove('pomodoro-active');
+                    
+                    // Play notification sound
+                    const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3');
+                    audio.play();
+                    
+                    // Show notification
+                    alert(`Time's up! ${currentMode === 'pomodoro' ? 'Take a break!' : 'Time to get back to work!'}`);
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

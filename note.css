@@ -1,0 +1,92 @@
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #F9FAFB; /* Light background for better contrast */
+}
+
+.note-item {
+    transition: transform 0.2s, box-shadow 0.2s;
+    background-color: #FFFAE5; /* Softer sticky note color */
+    border: 1px solid #F6EB61; /* Lighter border */
+    border-radius: 0.5rem; /* Rounded corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.note-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal overlay styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 50; /* Ensure it is above other content */
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 3rem; /* Increased padding for more space */
+    width: 90%; /* Set width to 90% of the viewport */
+    max-width: 600px; /* Maximum width for larger screens */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 100; /* Ensure it is above the overlay */
+    position: relative; /* For positioning the close button */
+}
+
+.close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #4A5568; /* Gray color */
+    cursor: pointer;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem; /* Rounded corners */
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background-color: #4F46E5; /* Indigo color */
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #4338CA; /* Darker shade on hover */
+}
+
+.btn-success {
+    background-color: #22C55E; /* Green color */
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #16A34A; /* Darker shade on hover */
+}
+
+.btn-danger {
+    background-color: #EF4444; /* Red color */
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #DC2626; /* Darker shade on hover */
+}

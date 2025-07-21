@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyHub - Timetable</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style/timetable.css">
+    
+</head>
+<body class="min-h-screen flex">
+    <!-- Mobile Menu Button -->
+    <button class="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-white shadow-md" id="menuToggle">
+        <i class="fas fa-bars text-indigo-600"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar w-64 bg-white h-screen fixed shadow-lg z-40 flex flex-col">
+        <div class="p-6 flex items-center space-x-3 border-b">
+            <h1 class="text-xl font-bold text-indigo-600">StudyHub</h1>
+        </div>
+        
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="index.php" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-home w-5 text-center"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="timetable.php" class="flex items-center space-x-3 p-3 rounded-lg bg-indigo-50 text-indigo-700">
+                <i class="fas fa-calendar-alt w-5 text-center"></i>
+                <span>Timetable</span>
+            </a>
+            <a href="to-do.php" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-tasks w-5 text-center"></i>
+                <span>To-Do List</span>
+            </a>
+            <a href="reminders.php" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-bell w-5 text-center"></i>
+                <span>Reminders</span>
+            </a>
+            <a href="study.php" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-users w-5 text-center"></i>
+                <span>Study Rooms</span>
+            </a>
+            <a href="note.php" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fa-regular fa-note-sticky"></i>
+                <span>Notes</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 ml-0 md:ml-64 p-6">
+        <!-- Header -->
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Weekly Timetable</h1>
+            <p class="text-gray-600">Organize your classes and study sessions.</p>
+        </header>
+        
+        <!-- Timetable Controls -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center space-x-4">
+                <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300" id="prevWeekBtn">
+                    <i class="fas fa-chevron-left mr-1"></i> Previous Week
+                </button>
+                <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300" id="nextWeekBtn">
+                    Next Week <i class="fas fa-chevron-right ml-1"></i>
+                </button>
+            </div>
+            <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700" id="addClassBtn">
+                <i class="fas fa-plus mr-1"></i> Add Class
+            </button>
+        </div>
+        
+        <!-- Timetable Grid -->
+        <div class="timetable-grid" id="timetableGrid">
+            <div class="timetable-header"></div> <!-- Empty corner for time labels -->
+            <div class="timetable-header" id="monHeader"></div>
+            <div class="timetable-header" id="tueHeader"></div>
+            <div class="timetable-header" id="wedHeader"></div>
+            <div class="timetable-header" id="thuHeader"></div>
+            <div class="timetable-header" id="friHeader"></div>
+            <div class="timetable-header" id="satHeader"></div>
+            <div class="timetable-header" id="sunHeader"></div>
+            
+            <!-- Time rows and cells will be dynamically generated here -->
+        </div>
+    </div>
+
+    <!-- Add Class Modal -->
+    <div id="addClassModal" class="class-modal">
+        <div class="class-modal-content">
+            <span class="close-button">&times;</span>
+            <h3 class="text-xl font-bold mb-4">Add New Class/Event</h3>
+            <form id="addClassForm" class="space-y-4">
+                <div>
+                    <label for="className" class="block text-sm font-medium text-gray-700">Class Name</label>
+                    <input type="text" id="className" name="className" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                </div>
+                <div>
+                    <label for="classCode" class="block text-sm font-medium text-gray-700">Class Code (Optional)</label>
+                    <input type="text" id="classCode" name="classCode" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="classDate" class="block text-sm font-medium text-gray-700">Date</label>
+                    <input type="date" id="classDate" name="classDate" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="startTime" class="block text-sm font-medium text-gray-700">Start Time</label>
+                        <input type="time" id="startTime" name="startTime" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                    </div>
+                    <div>
+                        <label for="endTime" class="block text-sm font-medium text-gray-700">End Time</label>
+                        <input type="time" id="endTime" name="endTime" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                    </div>
+                </div>
+                <div>
+                    <label for="classColor" class="block text-sm font-medium text-gray-700">Color Tag</label>
+                    <select id="classColor" name="classColor" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="blue">Blue (Default)</option>
+                        <option value="purple">Purple</option>
+                        <option value="green">Green</option>
+                        <option value="red">Red</option>
+                        <option value="yellow">Yellow</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Add Class
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('active');
+        });
+
+        // Modal functionality
+        const addClassModal = document.getElementById('addClassModal');
+        const addClassBtn = document.getElementById('addClassBtn');
+        const closeButton = document.querySelector('.close-button');
+        const addClassForm = document.getElementById('addClassForm');
+        const timetableGrid = document.getElementById('timetableGrid');
+        const prevWeekBtn = document.getElementById('prevWeekBtn');
+        const nextWeekBtn = document.getElementById('nextWeekBtn');
+        const classDateInput = document.getElementById('classDate'); // New: Date input in form
+
+        // Get header elements for dynamic date updates
+        const dayHeaders = {
+            Mon: document.getElementById('monHeader'),
+            Tue: document.getElementById('tueHeader'),
+            Wed: document.getElementById('wedHeader'),
+            Thu: document.getElementById('thuHeader'),
+            Fri: document.getElementById('friHeader'),
+            Sat: document.getElementById('satHeader'),
+            Sun: document.getElementById('sunHeader')
+        };
+
+        addClassBtn.onclick = function() {
+            // Pre-fill the date input with the Monday of the current week
+            const mondayOfCurrentWeek = getStartOfWeek(currentWeekStart);
+            classDateInput.value = mondayOfCurrentWeek.toISOString().split('T')[0];
+            addClassModal.style.display = 'flex';
+        }
+
+        closeButton.onclick = function() {
+            addClassModal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == addClassModal) {
+                addClassModal.style.display = 'none';
+            }
+        }
+
+        // --- Week Navigation Logic ---
+        let currentWeekStart = new Date(); // Start with today's date
+        const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; // JS getDay() returns 0 for Sunday
+
+        function getStartOfWeek(date) {
+            const d = new Date(date);
+            const day = d.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust to Monday of the current week
+            d.setDate(diff);
+            d.setHours(0, 0, 0, 0); // Set to start of the day
+            return d;
+        }
+
+        function formatHeaderDate(date) {
+            // Removed day abbreviation, now only shows DD/MM
+            const dayOfMonth = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            return `${dayOfMonth}/${month}`;
+        }
+
+        // Function to check if a date is today
+        function isToday(someDate) {
+            const today = new Date();
+            return someDate.getDate() === today.getDate() &&
+                   someDate.getMonth() === today.getMonth() &&
+                   someDate.getFullYear() === today.getFullYear();
+        }
+
+        function updateWeekDisplay() {
+            const start = getStartOfWeek(currentWeekStart);
+            
+            // Update day headers with actual dates
+            const tempDate = new Date(start);
+            for (let i = 0; i < 7; i++) {
+                const dayAbbr = daysOfWeek[tempDate.getDay()];
+                if (dayHeaders[dayAbbr]) { // Ensure the header element exists
+                    dayHeaders[dayAbbr].textContent = formatHeaderDate(tempDate);
+                    dayHeaders[dayAbbr].dataset.fullDate = tempDate.toISOString().split('T')[0]; // Store full date for lookup
+
+                    // Remove 'today' class from all headers first
+                    Object.values(dayHeaders).forEach(header => header.classList.remove('today'));
+
+                    // Add 'today' class if it's the current real-life date
+                    if (isToday(tempDate)) {
+                        dayHeaders[dayAbbr].classList.add('today');
+                    }
+                }
+                tempDate.setDate(tempDate.getDate() + 1);
+            }
+
+            renderClasses(); // Re-render classes for the new week
+        }
+
+        prevWeekBtn.addEventListener('click', () => {
+            currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+            updateWeekDisplay();
+        });
+
+        nextWeekBtn.addEventListener('click', () => {
+            currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+            updateWeekDisplay();
+        });
+
+        // --- Class Management Logic ---
+        // Store all classes, each with a specific date
+        let allClasses = JSON.parse(localStorage.getItem('timetableClasses')) || [];
+
+        // Function to generate time slots and grid cells
+        function generateTimetableGrid() {
+            // Clear existing grid content (except headers)
+            const existingCells = timetableGrid.querySelectorAll('.time-label, .time-cell');
+            existingCells.forEach(cell => cell.remove());
+
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const startHour = 0; // Start from 00:00
+            const endHour = 23; // End at 23:00
+
+            for (let h = startHour; h <= endHour; h++) {
+                const hourLabel = h.toString().padStart(2, '0') + ':00';
+                
+                // Add time label
+                const timeLabelDiv = document.createElement('div');
+                timeLabelDiv.className = 'time-label';
+                timeLabelDiv.textContent = hourLabel;
+                timetableGrid.appendChild(timeLabelDiv);
+
+                // Add cells for each day
+                days.forEach(day => {
+                    const cellDiv = document.createElement('div');
+                    cellDiv.className = 'time-cell';
+                    cellDiv.dataset.day = day; // Keep for consistency, though fullDate is primary
+                    cellDiv.dataset.hour = h.toString().padStart(2, '0');
+                    // Add a data attribute for the full date of this cell's day
+                    // This will be updated by updateWeekDisplay
+                    cellDiv.dataset.fullDate = ''; 
+                    timetableGrid.appendChild(cellDiv);
+                });
+            }
+        }
+
+        // Function to render classes onto the grid
+        function renderClasses() {
+            // Remove all previously rendered class blocks
+            document.querySelectorAll('.time-block-container').forEach(block => block.remove());
+
+            const weekStart = getStartOfWeek(currentWeekStart);
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6);
+            weekEnd.setHours(23, 59, 59, 999); // End of Sunday
+
+            // Filter classes for the current week
+            const classesForCurrentWeek = allClasses.filter(cls => {
+                const classDate = new Date(cls.fullDate);
+                // Normalize classDate to start of day for comparison
+                classDate.setHours(0, 0, 0, 0); 
+                return classDate >= weekStart && classDate <= weekEnd;
+            });
+
+            classesForCurrentWeek.forEach(cls => {
+                const startHour = parseInt(cls.startTime.split(':')[0]);
+                const startMinute = parseInt(cls.startTime.split(':')[1]);
+                const endHour = parseInt(cls.endTime.split(':')[0]);
+                const endMinute = parseInt(cls.endTime.split(':')[1]);
+
+                // Calculate duration in minutes
+                const durationMinutes = (endHour * 60 + endMinute) - (startHour * 60 + startMinute);
+                if (durationMinutes <= 0) return; // Invalid time range
+
+                // Calculate height and top offset for the class block
+                const pixelsPerMinute = 60 / 60; // 60px height per hour, so 1px per minute
+                const blockHeight = durationMinutes * pixelsPerMinute;
+                const blockTopOffset = startMinute * pixelsPerMinute;
+
+                // Get the day of the week abbreviation for the class's specific date
+                const classDateObj = new Date(cls.fullDate);
+                const classFullDateString = classDateObj.toISOString().split('T')[0];
+
+                // Find the target cell for the class using its full date and hour
+                const hourStr = startHour.toString().padStart(2, '0');
+                const cells = Array.from(timetableGrid.querySelectorAll(`.time-cell`));
+                const targetCell = cells.find(cell => 
+                    cell.dataset.day === daysOfWeek[classDateObj.getDay()] && 
+                    cell.dataset.hour === hourStr
+                );
+                
+                if (targetCell) {
+                    const classBlockContainer = document.createElement('div');
+                    classBlockContainer.className = 'time-block-container';
+                    classBlockContainer.style.top = `${blockTopOffset}px`;
+                    classBlockContainer.style.height = `${blockHeight}px`;
+
+                    const classBlockActual = document.createElement('div');
+                    classBlockActual.className = `time-block-actual bg-${cls.color}-class`;
+                    classBlockActual.innerHTML = `
+                        <div class="class-name">${cls.name}</div>
+                        <div class="class-time">${cls.code ? cls.code + ' - ' : ''}${cls.startTime} - ${cls.endTime}</div>
+                        <div class="time-block-actions">
+                            <button class="text-gray-600 hover:text-indigo-600 edit-class-btn" data-id="${cls.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-gray-600 hover:text-red-600 delete-class-btn" data-id="${cls.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    classBlockContainer.appendChild(classBlockActual);
+                    targetCell.appendChild(classBlockContainer);
+                }
+            });
+
+            // Add event listeners for delete buttons
+            document.querySelectorAll('.delete-class-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const classId = this.dataset.id;
+                    allClasses = allClasses.filter(cls => cls.id !== classId);
+                    localStorage.setItem('timetableClasses', JSON.stringify(allClasses));
+                    renderClasses(); // Re-render the timetable
+                });
+            });
+
+            // Add event listeners for edit buttons (placeholder)
+            document.querySelectorAll('.edit-class-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const classId = this.dataset.id;
+                    alert(`Edit functionality for class ID: ${classId} (Not implemented yet)`);
+                    // Here you would typically open the modal pre-filled with class data
+                });
+            });
+        }
+
+        // Handle form submission
+        addClassForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const selectedDateString = document.getElementById('classDate').value; // Get date from input
+            
+            const newClass = {
+                id: Date.now().toString(), // Simple unique ID
+                name: document.getElementById('className').value.trim(),
+                code: document.getElementById('classCode').value.trim(),
+                fullDate: selectedDateString, // Use the date from the input
+                startTime: document.getElementById('startTime').value,
+                endTime: document.getElementById('endTime').value,
+                color: document.getElementById('classColor').value || 'blue'
+            };
+
+            if (newClass.name && newClass.fullDate && newClass.startTime && newClass.endTime) {
+                allClasses.push(newClass);
+                // Store to localStorage for persistence
+                localStorage.setItem('timetableClasses', JSON.stringify(allClasses));
+                
+                addClassForm.reset();
+                addClassModal.style.display = 'none';
+                renderClasses(); // Re-render to show the new class
+            } else {
+                alert('Please fill in all required fields.');
+            }
+        });
+
+        // Initial setup with proper timing
+        generateTimetableGrid();
+        requestAnimationFrame(() => {
+            updateWeekDisplay();
+            renderClasses();
+        });
+
+
+        // Highlight only the previous day's column in the timetable grid (do not highlight today)
+        function highlightPreviousColumnOnly() {
+            // Remove previous highlights
+            document.querySelectorAll('.timetable-header.prevday, .time-cell.prevday').forEach(el => {
+            el.classList.remove('prevday');
+            el.style.backgroundColor = '';
+            });
+
+            // Find previous day's date string (yesterday)
+            const today = new Date();
+            const prevDay = new Date(today);
+            prevDay.setDate(today.getDate() - 1);
+            const prevDayDateString = prevDay.toISOString().split('T')[0];
+
+            // Highlight header for previous day
+            Object.values(dayHeaders).forEach(header => {
+            if (header.dataset.fullDate === prevDayDateString) {
+                header.style.backgroundColor = '#fef9c3'; // light yellow
+                header.classList.add('prevday');
+            } else {
+                header.style.backgroundColor = '';
+            }
+            });
+
+            // Highlight all cells in previous day's column
+            timetableGrid.querySelectorAll(`[data-full-date="${prevDayDateString}"]`).forEach(cell => {
+            cell.style.backgroundColor = '#fef9c3'; // light yellow
+            cell.classList.add('prevday');
+            });
+        }
+
+        // Call highlightPreviousColumnOnly whenever week is updated
+        const originalUpdateWeekDisplay = updateWeekDisplay;
+        updateWeekDisplay = function() {
+            originalUpdateWeekDisplay();
+            highlightPreviousColumnOnly();
+        };
+
+        // Initial highlight
+        highlightPreviousColumnOnly();
+    </script>
+    
+</body>
+</html>

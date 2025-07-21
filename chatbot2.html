@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Assistant Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message { animation: fadeIn 0.3s ease-out; }
+        .floating-button {
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .floating-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 40px rgba(0, 0, 0, 0.25);
+        }
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        .highlight {
+            background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto max-w-6xl px-4 py-8">
+        <!-- Header Section -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-indigo-700 mb-4">Study Assistant</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">Your personal AI-powered study companion for academic success</p>
+        </header>
+
+        <!-- Main Chat Interface -->
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden mb-12" id="chat-container">
+            <!-- Chat Header -->
+            <div class="bg-indigo-600 text-white p-6 flex items-center">
+                <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center mr-4">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/55b46f5a-2eff-4625-a238-5bfe84adc357.png" alt="Circular avatar of the study assistant with a friendly, knowledgeable expression" class="w-10 h-10 rounded-full" />
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold">StudyBot</h2>
+                    <p class="text-indigo-100 text-sm">Here to help with your studies</p>
+                </div>
+                <div class="ml-auto flex space-x-2">
+                    <button class="p-2 rounded-full hover:bg-indigo-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Messages Container -->
+            <div class="p-6 h-96 overflow-y-auto" id="messages">
+                <div class="message mb-4 flex">
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/df9e4ee2-d4ff-47bf-9660-24448ff7c40b.png" alt="Small circular avatar of the study assistant" class="w-6 h-6 rounded-full" />
+                    </div>
+                    <div class="bg-indigo-50 rounded-lg p-4 max-w-3/4">
+                        <p class="text-gray-800">Hello! I'm your Study Assistant. What subject would you like help with today? I can help with math, science, history, languages and more!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="border-t border-gray-200 p-4 bg-gray-50">
+                <div class="flex">
+                    <input type="text" id="user-input" placeholder="Type your question here..." class="flex-grow px-4 py-3 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <button id="send-btn" class="bg-indigo-600 text-white px-6 py-3 rounded-r-lg hover:bg-indigo-700 transition duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="mb-16" id="features">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Boost Your Learning</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center mb-3 text-gray-800">Flashcards</h3>
+                    <p class="text-gray-600 text-center">Create and review digital flashcards to memorize key concepts and terms efficiently.</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center mb-3 text-gray-800">Quizzes</h3>
+                    <p class="text-gray-600 text-center">Test your knowledge with personalized quizzes that adapt to your learning progress.</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center mb-3 text-gray-800">Progress Tracking</h3>
+                    <p class="text-gray-600 text-center">Monitor your study habits and see your improvement over time with detailed analytics.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subjects Section -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Subjects You Can Study</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6" id="subjects">
+                <!-- Subject cards will be added dynamically -->
+            </div>
+        </div>
+
+        <!-- Floating Action Button -->
+        <div class="fixed bottom-8 right-8">
+            <button id="help-btn" class="floating-button bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Subjects data
+        const subjects = [
+            { name: "Mathematics", icon: "🧮", color: "bg-blue-100", textColor: "text-blue-800" },
+            { name: "Physics", icon: "⚛️", color: "bg-purple-100", textColor: "text-purple-800" },
+            { name: "Chemistry", icon: "🧪", color: "bg-green-100", textColor: "text-green-800" },
+            { name: "Biology", icon: "🧬", color: "bg-emerald-100", textColor: "text-emerald-800" },
+            { name: "History", icon: "🏛️", color: "bg-amber-100", textColor: "text-amber-800" },
+            { name: "Literature", icon: "📚", color: "bg-red-100", textColor: "text-red-800" },
+            { name: "Programming", icon: "💻", color: "bg-indigo-100", textColor: "text-indigo-800" },
+            { name: "Languages", icon: "🌐", color: "bg-teal-100", textColor: "text-teal-800" }
+        ];
+
+        // AI API endpoint - replace with your actual AI service endpoint
+
+
+
+
+        const AI_API_ENDPOINT = 'https://api.your-ai-service.com/v1/chat/completions';
+
+        async function getAIResponse(prompt) {
+            try {
+                const response = await fetch(AI_API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer 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' // Replace with your API key
+                    },
+                    body: JSON.stringify({
+                        prompt: `${prompt} - Answer as a helpful tutor`,
+                        max_tokens: 150,
+                        temperature: 0.7
+                    })
+                });
+                const data = await response.json();
+                return data.choices[0].text.trim();
+            } catch (error) {
+                console.error('Error calling AI API:', error);
+                return "I'm having trouble accessing my knowledge base right now. Please try again later.";
+            }
+        }
+
+        // Initialize subjects
+        document.addEventListener('DOMContentLoaded', function() {
+            const subjectsContainer = document.getElementById('subjects');
+            
+            subjects.forEach(subject => {
+                const subjectCard = document.createElement('div');
+                subjectCard.className = `subject-card ${subject.color} ${subject.textColor} p-6 rounded-xl shadow-md cursor-pointer hover:shadow-lg transition duration-300 text-center`;
+                subjectCard.innerHTML = `
+                    <div class="text-4xl mb-3">${subject.icon}</div>
+                    <h3 class="font-semibold">${subject.name}</h3>
+                `;
+                subjectCard.addEventListener('click', async () => {
+                    const prompt = `I need help studying ${subject.name}. Can you explain key concepts and provide study tips?`;
+                    const loadingMessage = sendMessage("Thinking about ${subject.name}...", false);
+                    const aiResponse = await getAIResponse(prompt);
+                    messagesContainer.removeChild(loadingMessage);
+                    sendBotMessage(aiResponse);
+                });
+                subjectsContainer.appendChild(subjectCard);
+            });
+
+            // Chatbot functionality
+            const messagesContainer = document.getElementById('messages');
+            const userInput = document.getElementById('user-input');
+            const sendBtn = document.getElementById('send-btn');
+            const helpBtn = document.getElementById('help-btn');
+
+            function sendMessage(message, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message mb-4 flex ${isUser ? 'justify-end' : ''}`;
+                
+                messageDiv.innerHTML = `
+                    ${isUser ? '' : `
+                        <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/15b9d081-ab48-43d8-a1ac-89aa3b088934.png" alt="Bot avatar" class="w-6 h-6 rounded-full" />
+                        </div>
+                    `}
+                    <div class="${isUser ? 'bg-indigo-600 text-white' : 'bg-indigo-50'} rounded-lg p-4 max-w-3/4">
+                        <p>${message}</p>
+                    </div>
+                    ${isUser ? `
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center ml-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    ` : ''}
+                `;
+                
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            function sendBotMessage(message) {
+                sendMessage(message, false);
+            }
+
+            async function processUserInput() {
+                const text = userInput.value.trim();
+                if (text) {
+                    sendMessage(text, true);
+                    userInput.value = '';
+                    
+                    // Show loading state
+                    const loadingMessage = sendMessage("Thinking...", false);
+                    
+                    try {
+                        // Get AI response
+                        const aiResponse = await getAIResponse(text);
+                        // Remove loading message and show actual response
+                        messagesContainer.removeChild(loadingMessage);
+                        sendBotMessage(aiResponse);
+                    } catch (error) {
+                        console.error('Error processing AI response:', error);
+                        sendBotMessage("Sorry, I encountered an error. Please try your question again.");
+                    }
+                }
+            }
+
+            sendBtn.addEventListener('click', processUserInput);
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    processUserInput();
+                }
+            });
+
+            helpBtn.addEventListener('click', () => {
+                sendBotMessage("I can help with many subjects! Try typing something like 'I need help with math' or click on one of the subject cards above.");
+            });
+        });
+    </script>
+</body>
+</html>
+

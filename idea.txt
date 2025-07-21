@@ -1,0 +1,76 @@
+1. 📈 Progress Tracker / Study Analytics
+Track time spent on subjects
+
+Visual charts for task completion (weekly/monthly)
+
+Show most productive days/hours
+
+Goal setting and streaks (e.g., “5-day study streak”)
+
+2. ⏱️ Pomodoro Timer with Break Suggestions
+Customizable Pomodoro cycles (25-5 or user-defined)
+
+Add ambient sounds (rain, coffee shop, silence)
+
+Auto-logs time spent on a task or note
+
+3. 🎯 Goal Board / Habit Tracker
+Set daily/weekly study or personal goals (like "Read 20 pages")
+
+Track habits like “Woke up at 6AM,” “No phone during study”
+
+Visual habit chain to motivate consistency
+
+4. 💡 Doubt Forum / Q&A Wall
+Ask academic or productivity questions
+
+Upvote/downvote answers
+
+Allow attaching notes or screenshots
+
+5. 🧑‍🏫 Tutor / Study Buddy Finder
+Let students list if they need help in a subject or can help others
+
+Match based on time availability and interests
+
+6. 📥 File Storage / Subject-wise Material Upload
+Upload and categorize PDFs, PPTs, past papers, etc.
+
+Tag by subject or exam type
+
+Simple document viewer (for PDF, Word, etc.)
+
+7. 📚 Revision Scheduler
+Algorithm to help space out revision (like spaced repetition)
+
+Create revision plans before exams
+
+Daily reminder of what to revise
+
+8. 🧘‍♂️ Mental Health & Break Zone
+Suggest breaks or wellness tips
+
+Daily affirmations
+
+Breathing exercises (with animation)
+
+Option for mood journaling
+
+9. 📅 Events & Exam Calendar
+Public or school-specific exam dates
+
+Add your own exams/tests
+
+Countdown timers for major exams
+
+10. 🎓 Scholarship / College Planning Resources
+Info/blog section for competitive exams
+
+Application deadlines
+
+Tips for productivity, CV/resume building
+
+11. 🎨 Customizable Dashboard Widgets
+Let users drag, hide, or customize blocks (Notes, Reminders, Goals)
+
+Choose from layout presets or themes
